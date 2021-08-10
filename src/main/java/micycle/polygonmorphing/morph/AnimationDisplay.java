@@ -6,14 +6,12 @@ import micycle.polygonmorphing.shapes.Polygon;
 
 public class AnimationDisplay extends Thread {
 	private Polygon[] morphs;
-	private Model model;
 	private int steps;
 	private int sleeptime;
 	private Controller controller;
 
 	public AnimationDisplay(Polygon[] morphs, Model model, Controller controller, int fps) {
 		this.morphs = morphs;
-		this.model = model;
 		this.steps = this.morphs.length;
 		this.sleeptime = 1000 / fps;
 		this.controller = controller;
@@ -31,11 +29,12 @@ public class AnimationDisplay extends Thread {
 		this.sleeptime = sleeptime;
 	}
 
+	@Override
 	public void run() {
 		for (int i = 0; i < this.steps; ++i) {
 			this.controller.getAnimationSlider().setValue(i + 1);
 			try {
-				AnimationDisplay.sleep(this.sleeptime);
+				Thread.sleep(this.sleeptime);
 				continue;
 			} catch (InterruptedException e) {
 				e.printStackTrace();

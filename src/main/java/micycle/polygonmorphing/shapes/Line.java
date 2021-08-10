@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import micycle.polygonmorphing.tools.Bresenham;
 
 public class Line extends GraphicObject {
-	
+
 	public static final boolean DASHED = true;
 	private Point start;
 	private Point end;
@@ -39,6 +39,7 @@ public class Line extends GraphicObject {
 		return this.end;
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		if (!this.dashed) {
 			Color c = g.getColor();
@@ -50,10 +51,12 @@ public class Line extends GraphicObject {
 		}
 	}
 
+	@Override
 	public boolean contains(Point p) {
 		return this.start.contains(p) || this.end.contains(p);
 	}
 
+	@Override
 	public String toSVG() {
 		StringBuffer buff = new StringBuffer();
 		buff.append("\t\t\t<path d=\"M " + this.start.getX() + " " + this.start.getY() + " L " + this.end.getX() + " " + this.end.getY()

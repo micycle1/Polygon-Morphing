@@ -3,7 +3,7 @@ package micycle.polygonmorphing.shapes;
 import micycle.polygonmorphing.tools.Constants;
 
 public class FeaturePoint extends Point implements Cloneable, Comparable {
-	
+
 	private double feat_var;
 	private double side_var;
 	private double feat_size;
@@ -102,6 +102,7 @@ public class FeaturePoint extends Point implements Cloneable, Comparable {
 		return this.prepared;
 	}
 
+	@Override
 	public String toString() {
 		return String.valueOf(super.toString()) + " feature variation: " + this.feat_var + "\n feature side variation: " + this.side_var
 				+ "\n feature size: " + this.feat_size + "\n" + this.prepared + "\n\n";
@@ -154,6 +155,7 @@ public class FeaturePoint extends Point implements Cloneable, Comparable {
 		return 0;
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		FeaturePoint fp = (FeaturePoint) super.clone();
 		fp.feat_var = this.feat_var;
@@ -171,6 +173,7 @@ public class FeaturePoint extends Point implements Cloneable, Comparable {
 		return fp;
 	}
 
+	@Override
 	public int compareTo(Object o) {
 		if (o instanceof FeaturePoint) {
 			return this.compareTo((FeaturePoint) o);

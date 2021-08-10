@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 
 public abstract class GraphicObject extends JComponent {
-	
+
 	protected int factor;
 
 	public GraphicObject() {
@@ -27,10 +27,12 @@ public abstract class GraphicObject extends JComponent {
 		return this.factor;
 	}
 
+	@Override
 	public String toString() {
 		return "GaphicObject [factor=" + this.getFactor() + "]";
 	}
 
+	@Override
 	public abstract void paint(Graphics var1);
 
 	public abstract boolean contains(Point var1);

@@ -11,7 +11,7 @@ import micycle.polygonmorphing.tools.Node;
 import micycle.polygonmorphing.tools.Path;
 
 public class MorphCalculator {
-	
+
 	private static int diff;
 
 	public static void preparePolygon(Polygon p, int sample_rate, int range) {
@@ -34,18 +34,17 @@ public class MorphCalculator {
 			double dot2;
 			double yn;
 			int j;
-			Point feature = (Point) fPoints.elementAt(i);
+			Point feature = fPoints.elementAt(i);
 			int index = samplePoints.indexOf(feature);
-			Vector<Point> ros = new Vector<Point>();
+			Vector<Point> ros = new Vector<>();
 			for (j = 0; j < 2 * range + 1; ++j) {
 				ros.add(samplePoints.elementAt((index - range + sample_size + j) % sample_size));
 			}
 			double[][] covariance = Covariance.covariance(ros);
 			double[] eigenvalues = Eigenvalue.hqr2(covariance, eigenvectors);
-			Point next = (Point) ros.elementAt(range + 1);
+			Point next = ros.elementAt(range + 1);
 			double xn = feature.getX() - next.getX();
-			double dot1 = Math
-					.abs(Covariance.dotProduct(eigenvectors[0][0], eigenvectors[1][0], xn, yn = (double) (feature.getY() - next.getY())));
+			double dot1 = Math.abs(Covariance.dotProduct(eigenvectors[0][0], eigenvectors[1][0], xn, yn = feature.getY() - next.getY()));
 			if (dot1 > (dot2 = Math.abs(Covariance.dotProduct(eigenvectors[0][1], eigenvectors[1][1], xn, yn)))) {
 				tangent_eva = eigenvalues[0];
 				normal_eva = eigenvalues[1];
@@ -63,8 +62,8 @@ public class MorphCalculator {
 			epsilon = fp.getConvex() ? 1.0 : -1.0;
 			feature_variation[i] = epsilon * normal_eva / (normal_eva + tangent_eva);
 			fp.setFeat_var(feature_variation[i]);
-			Vector<Point> rol = new Vector<Point>();
-			Vector<Point> ror = new Vector<Point>();
+			Vector<Point> rol = new Vector<>();
+			Vector<Point> ror = new Vector<>();
 			for (j = 0; j < range; ++j) {
 				rol.add(ros.elementAt(j));
 				ror.add(ros.elementAt(j + range + 1));
@@ -72,11 +71,11 @@ public class MorphCalculator {
 			double[][] cov_rol = Covariance.covariance(rol);
 			double[][] cov_ror = Covariance.covariance(ror);
 			double[] tmp_eva = Eigenvalue.hqr2(cov_rol, tmp_evec);
-			next = (Point) rol.elementAt(range / 2 - 1);
+			next = rol.elementAt(range / 2 - 1);
 			xn = next.getX();
 			yn = next.getY();
-			next = (Point) rol.elementAt(range / 2);
-			dot1 = Math.abs(Covariance.dotProduct(tmp_evec[0][0], tmp_evec[1][0], xn -= (double) next.getX(), yn -= (double) next.getY()));
+			next = rol.elementAt(range / 2);
+			dot1 = Math.abs(Covariance.dotProduct(tmp_evec[0][0], tmp_evec[1][0], xn -= next.getX(), yn -= next.getY()));
 			if (dot1 > (dot2 = Math.abs(Covariance.dotProduct(tmp_evec[0][1], tmp_evec[1][1], xn, yn)))) {
 				tmp_t_eva = tmp_eva[0];
 				tmp_n_eva = tmp_eva[1];
@@ -86,11 +85,11 @@ public class MorphCalculator {
 			}
 			double sigma_rol = tmp_n_eva / (tmp_n_eva + tmp_t_eva);
 			tmp_eva = Eigenvalue.hqr2(cov_ror, tmp_evec);
-			next = (Point) ror.elementAt(range / 2 - 1);
+			next = ror.elementAt(range / 2 - 1);
 			xn = next.getX();
 			yn = next.getY();
-			next = (Point) ror.elementAt(range / 2);
-			dot1 = Math.abs(Covariance.dotProduct(tmp_evec[0][0], tmp_evec[1][0], xn -= (double) next.getX(), yn -= (double) next.getY()));
+			next = ror.elementAt(range / 2);
+			dot1 = Math.abs(Covariance.dotProduct(tmp_evec[0][0], tmp_evec[1][0], xn -= next.getX(), yn -= next.getY()));
 			dot2 = Math.abs(Covariance.dotProduct(tmp_evec[0][1], tmp_evec[1][1], xn, yn));
 			if (dot1 > dot2) {
 				tmp_t_eva = tmp_eva[0];
@@ -102,11 +101,11 @@ public class MorphCalculator {
 			double sigma_ror = tmp_n_eva / (tmp_n_eva + tmp_t_eva);
 			side_feature_v[i] = (sigma_rol + sigma_ror) / 2.0;
 			fp.setSide_var(side_feature_v[i]);
-			xn = ((Point) rol.firstElement()).getX() - ((Point) rol.lastElement()).getX();
-			yn = ((Point) rol.firstElement()).getY() - ((Point) rol.lastElement()).getY();
+			xn = rol.firstElement().getX() - rol.lastElement().getX();
+			yn = rol.firstElement().getY() - rol.lastElement().getY();
 			double rol_length = Math.sqrt(xn * xn + yn * yn);
-			xn = ((Point) ror.firstElement()).getX() - ((Point) ror.lastElement()).getX();
-			yn = ((Point) ror.firstElement()).getY() - ((Point) ror.lastElement()).getY();
+			xn = ror.firstElement().getX() - ror.lastElement().getX();
+			yn = ror.firstElement().getY() - ror.lastElement().getY();
 			double ror_length = Math.sqrt(xn * xn + yn * yn);
 			feature_size[i] = (rol_length + ror_length) / polygon_length / 2.0;
 			fp.setFeat_size(feature_size[i]);
@@ -139,8 +138,9 @@ public class MorphCalculator {
 						temp_index_s = (i - k + s_points) % s_points;
 						temp_index_t = (j - l + t_points) % t_points;
 						double path_costs = costs[temp_index_s][temp_index_t];
-						if (!((path_costs += MorphCalculator.calcDeltaCosts(s, temp_index_s, i, t, temp_index_t, j)) < min_costs))
+						if (!((path_costs += MorphCalculator.calcDeltaCosts(s, temp_index_s, i, t, temp_index_t, j)) < min_costs)) {
 							continue;
+						}
 						min_costs = path_costs;
 						index_s = temp_index_s;
 						index_t = temp_index_t;
@@ -266,8 +266,9 @@ public class MorphCalculator {
 						Node pred = nodes[node_index1][node_index2];
 						current_costs += pred.getSimCosts();
 						if (!((current_costs += MorphCalculator.calcDeltaCosts(s, node_index1, i, t, node_index2, j)) < min_costs)
-								|| node_index1 == i && node_index2 == j)
+								|| node_index1 == i && node_index2 == j) {
 							continue;
+						}
 						min_costs = current_costs;
 						nodes[i][j].setPredecessor(pred);
 						nodes[i][j].setPathCosts(min_costs);
@@ -275,68 +276,6 @@ public class MorphCalculator {
 				}
 			}
 		}
-	}
-
-	@SuppressWarnings("unused")
-	private static Node getBestPossiblePredecessor(Node[][] nodes, Polygon s, Polygon t, int i, int j, int i_bound, int j_bound) {
-		Node pred = null;
-		Node node = nodes[i][j];
-		double optimal_costs = Double.MAX_VALUE;
-		int dim1 = nodes.length;
-		int dim2 = nodes[0].length;
-		int steps1 = Math.min(3, i - i_bound);
-		int steps2 = Math.min(3, j - j_bound);
-		for (int k = 0; k <= steps1; ++k) {
-			int node_index1 = (i - k + dim1) % dim1;
-			for (int l = 0; l <= steps2; ++l) {
-				double current_costs = 0.0;
-				int node_index2 = (j - l + dim2) % dim2;
-				node = nodes[node_index1][node_index2];
-				current_costs += node.getSimCosts();
-				if (!((current_costs += MorphCalculator.calcDeltaCosts(s, i, i, t, node_index2, j)) < optimal_costs)
-						|| node_index1 == i && node_index2 == j)
-					continue;
-				optimal_costs = current_costs;
-				pred = nodes[node_index1][node_index2];
-				pred.setPathCosts(optimal_costs);
-			}
-		}
-		return pred;
-	}
-
-	@SuppressWarnings("unused")
-	private static Node getBestPossiblePredecessor(Node[][] nodes, Polygon s, Polygon t, int i, int j, boolean first_index_fixed) {
-		Node pred = null;
-		Node node = nodes[i][j];
-		double optimal_costs = Double.MAX_VALUE;
-		int dim1 = nodes.length;
-		int dim2 = nodes[0].length;
-		if (first_index_fixed) {
-			for (int k = 0; k < 3; ++k) {
-				double current_costs = 0.0;
-				int node_index2 = (j - k + dim2) % dim2;
-				node = nodes[i][node_index2];
-				current_costs += node.getSimCosts();
-				if (!((current_costs += MorphCalculator.calcDeltaCosts(s, i, i, t, node_index2, j)) < optimal_costs))
-					continue;
-				optimal_costs = current_costs;
-				pred = nodes[i][node_index2];
-				pred.setPathCosts(optimal_costs);
-			}
-		} else {
-			for (int k = 0; k < 3; ++k) {
-				double current_costs = 0.0;
-				int node_index1 = (i - k + dim1) % dim1;
-				node = nodes[node_index1][j];
-				current_costs += node.getSimCosts();
-				if (!((current_costs += MorphCalculator.calcDeltaCosts(s, node_index1, i, t, j, j)) < optimal_costs))
-					continue;
-				optimal_costs = current_costs;
-				pred = nodes[node_index1][j];
-				pred.setPathCosts(optimal_costs);
-			}
-		}
-		return pred;
 	}
 
 	private static Node getAlternative(Node[][] nodes, Polygon original, Polygon target, int x_limit, int y_limit, int x_index,
@@ -359,8 +298,9 @@ public class MorphCalculator {
 		for (i = 1; i <= steps2; ++i) {
 			node_index2 = (y_index - i + dim2) % dim2;
 			node_costs = nodes[x_index][node_index2].getSimCosts();
-			if (!((node_costs += MorphCalculator.calcDeltaCosts(original, x_limit, x_limit, target, y_index, node_index2)) < min_costs))
+			if (!((node_costs += MorphCalculator.calcDeltaCosts(original, x_limit, x_limit, target, y_index, node_index2)) < min_costs)) {
 				continue;
+			}
 			min_costs = node_costs;
 			alternative = new Node(x_index, node_index2);
 			alternative.setPathCosts(node_costs);
@@ -371,8 +311,9 @@ public class MorphCalculator {
 				node_index2 = (y_index - j + dim2) % dim2;
 				node_costs = nodes[node_index1][node_index2].getSimCosts();
 				if (!((node_costs += MorphCalculator.calcDeltaCosts(original, node_index1, x_limit, target, node_index2,
-						y_limit)) < min_costs))
+						y_limit)) < min_costs)) {
 					continue;
+				}
 				min_costs = node_costs;
 				alternative = new Node(node_index1, node_index2);
 				alternative.setPathCosts(node_costs);
@@ -501,8 +442,9 @@ public class MorphCalculator {
 						}
 						x = current_node.getX();
 						y = current_node.getY();
-						if (x != i || y != j || !x_moved || !y_moved)
+						if (x != i || y != j || !x_moved || !y_moved) {
 							continue;
+						}
 						closed = true;
 					}
 					if (closed && current_path_costs < min_path_costs) {
@@ -543,8 +485,9 @@ public class MorphCalculator {
 		MorphCalculator.handleRemainingPathNodes(q, s, t, s1, t1, false);
 		MorphCalculator.handleRemainingPathNodes(q, t, s, t1, s1, true);
 		for (index = 0; index < sCount; ++index) {
-			if (s.getFeaturePoint(index).hasCorrespondence())
+			if (s.getFeaturePoint(index).hasCorrespondence()) {
 				continue;
+			}
 			FeaturePoint pred = MorphCalculator.findPredecessor(s, index);
 			t_pred = (FeaturePoint) pred.getCorrespondence();
 			pred_pred = MorphCalculator.findPredecessor(s, s.getFeaturePointIndex(pred));
@@ -554,8 +497,9 @@ public class MorphCalculator {
 			MorphCalculator.createNewFeaturePoint(s, t, s1, t1, index, pred, succ, t_succ, t_pred);
 		}
 		for (index = 0; index < tCount; ++index) {
-			if (t.getFeaturePoint(index).hasCorrespondence())
+			if (t.getFeaturePoint(index).hasCorrespondence()) {
 				continue;
+			}
 			t_pred = MorphCalculator.findPredecessor(t, index);
 			FeaturePoint pred = (FeaturePoint) t_pred.getCorrespondence();
 			t_pred_pred = MorphCalculator.findPredecessor(t, t.getFeaturePointIndex(t_pred));
@@ -593,8 +537,9 @@ public class MorphCalculator {
 			boolean toRight;
 			Node temp = q.getNodeAt(i);
 			int index_s = reverse ? temp.getY() : temp.getX();
-			if (s.getFeaturePoint(index_s).hasCorrespondence())
+			if (s.getFeaturePoint(index_s).hasCorrespondence()) {
 				continue;
+			}
 			boolean found_pred = false;
 			boolean found_succ = false;
 			boolean found_pred_pred = false;
@@ -604,8 +549,9 @@ public class MorphCalculator {
 				if (--pred_index < 0) {
 					pred_index += sCount;
 				}
-				if (!(pred = s.getFeaturePoint(pred_index)).hasCorrespondence())
+				if (!(pred = s.getFeaturePoint(pred_index)).hasCorrespondence()) {
 					continue;
+				}
 				found_pred = true;
 			}
 			int pred_pred_index = pred_index;
@@ -613,16 +559,18 @@ public class MorphCalculator {
 				if (--pred_pred_index < 0) {
 					pred_pred_index += sCount;
 				}
-				if (!(pred_pred = s.getFeaturePoint(pred_pred_index)).hasCorrespondence())
+				if (!(pred_pred = s.getFeaturePoint(pred_pred_index)).hasCorrespondence()) {
 					continue;
+				}
 				found_pred_pred = true;
 			}
 			while (!found_succ) {
 				if (++succ_index > sCount - 1) {
 					succ_index = 0;
 				}
-				if (!(succ = s.getFeaturePoint(succ_index)).hasCorrespondence())
+				if (!(succ = s.getFeaturePoint(succ_index)).hasCorrespondence()) {
 					continue;
+				}
 				found_succ = true;
 			}
 			FeaturePoint t_succ = (FeaturePoint) succ.getCorrespondence();
@@ -672,16 +620,18 @@ public class MorphCalculator {
 				for (j = 1; j < diff; ++j) {
 					tmp = t.getFeaturePoint((t_pred_index + j) % tCount);
 					cost = FeaturePoint.calculate_Sim_Cost(toBeHandled, tmp);
-					if (!(cost < minCost))
+					if (!(cost < minCost)) {
 						continue;
+					}
 					bestMatch = tmp;
 				}
 			} else {
 				for (j = 1; j < diff; ++j) {
 					tmp = t.getFeaturePoint((t_pred_index - j + tCount) % tCount);
 					cost = FeaturePoint.calculate_Sim_Cost(toBeHandled, tmp);
-					if (!(cost < minCost))
+					if (!(cost < minCost)) {
 						continue;
+					}
 					bestMatch = tmp;
 				}
 			}
@@ -708,10 +658,10 @@ public class MorphCalculator {
 			t_x += t_pred.getX();
 			t_y += t_pred.getY();
 			newPoint = new FeaturePoint(t_x, t_y);
-			s1.addVertexBehind((Point) middle, (Point) pred);
-			t1.addVertexBehind((Point) newPoint, (Point) t_pred);
-			t.addVertexBetween((Point) newPoint, (Point) t_pred, (Point) t_succ);
-			t.addVertexBehind((Point) newPoint, (Point) t_pred);
+			s1.addVertexBehind(middle, pred);
+			t1.addVertexBehind(newPoint, t_pred);
+			t.addVertexBetween(newPoint, t_pred, t_succ);
+			t.addVertexBehind(newPoint, t_pred);
 		} else {
 			FeaturePoint featurePoint3;
 			double total_length = 0.0D;
@@ -775,13 +725,13 @@ public class MorphCalculator {
 			t_x += featurePoint2.getX();
 			t_y += featurePoint2.getY();
 			newPoint = new FeaturePoint(t_x, t_y);
-			s1.addVertexBetween((Point) middle, (Point) pred, (Point) succ);
-			t1.addVertexBetween((Point) newPoint, (Point) t_pred, (Point) t_succ);
-			t.addVertexBetween((Point) newPoint, (Point) featurePoint2, (Point) featurePoint3);
+			s1.addVertexBetween(middle, pred, succ);
+			t1.addVertexBetween(newPoint, t_pred, t_succ);
+			t.addVertexBetween(newPoint, featurePoint2, featurePoint3);
 		}
 		int index_middle = s.getFeaturePointIndex(middle);
 		int index_newPoint = t.getFeaturePointIndex(newPoint);
-		s.getFeaturePoint(index_middle).setCorrespondence((Point) t.getFeaturePoint(index_newPoint));
+		s.getFeaturePoint(index_middle).setCorrespondence(t.getFeaturePoint(index_newPoint));
 	}
 
 	private static FeaturePoint findPredecessor(Polygon s, int index) {
@@ -791,8 +741,9 @@ public class MorphCalculator {
 			if (--index < 0) {
 				index += s.getCount();
 			}
-			if (!(predecessor = s.getFeaturePoint(index)).hasCorrespondence())
+			if (!(predecessor = s.getFeaturePoint(index)).hasCorrespondence()) {
 				continue;
+			}
 			found_pred = true;
 		} while (!found_pred);
 		return predecessor;
@@ -806,8 +757,9 @@ public class MorphCalculator {
 			if (++index >= sCount) {
 				index -= sCount;
 			}
-			if (!(successor = s.getFeaturePoint(index)).hasCorrespondence())
+			if (!(successor = s.getFeaturePoint(index)).hasCorrespondence()) {
 				continue;
+			}
 			found_succ = true;
 		} while (!found_succ);
 		return successor;
@@ -907,8 +859,9 @@ public class MorphCalculator {
 					}
 				}
 				Node current_node = field[dim1][dim2];
-				if (!(current_node.getPathCosts() < min_path_costs))
+				if (!(current_node.getPathCosts() < min_path_costs)) {
 					continue;
+				}
 				min_path_costs = current_node.getPathCosts();
 				path = new Path();
 				path.add(current_node);
@@ -933,23 +886,26 @@ public class MorphCalculator {
 		double current_costs = 0.0;
 		for (i = 1; i <= source_boundary; ++i) {
 			current_costs = field[source_index - i][target_index].getPathCosts();
-			if (!((current_costs += deltaCosts[source_index % dim1][target_index % dim2][i][0]) < min_costs))
+			if (!((current_costs += deltaCosts[source_index % dim1][target_index % dim2][i][0]) < min_costs)) {
 				continue;
+			}
 			min_costs = current_costs;
 			predecessor = field[source_index - i][target_index];
 		}
 		for (i = 1; i <= target_boundary; ++i) {
 			current_costs = field[source_index][target_index - i].getPathCosts();
-			if (!((current_costs += deltaCosts[source_index % dim1][target_index % dim2][0][i]) < min_costs))
+			if (!((current_costs += deltaCosts[source_index % dim1][target_index % dim2][0][i]) < min_costs)) {
 				continue;
+			}
 			min_costs = current_costs;
 			predecessor = field[source_index][target_index - i];
 		}
 		for (i = 1; i <= source_boundary; ++i) {
 			for (int j = 1; j <= target_boundary; ++j) {
 				current_costs = field[source_index - i][target_index - j].getPathCosts();
-				if (!((current_costs += deltaCosts[source_index % dim1][target_index % dim2][i][j]) < min_costs))
+				if (!((current_costs += deltaCosts[source_index % dim1][target_index % dim2][i][j]) < min_costs)) {
 					continue;
+				}
 				min_costs = current_costs;
 				predecessor = field[source_index - i][target_index - j];
 			}
@@ -972,16 +928,18 @@ public class MorphCalculator {
 		for (i = 1; i <= source_boundary; ++i) {
 			current_costs = field[field_index_source - i][field_index_target].getPathCosts();
 			if (!((current_costs += deltaCosts[(field_index_source + first_node_source) % dim1][(field_index_target + first_node_target)
-					% dim2][i][0]) < min_costs))
+					% dim2][i][0]) < min_costs)) {
 				continue;
+			}
 			min_costs = current_costs;
 			predecessor = field[field_index_source - i][field_index_target];
 		}
 		for (i = 1; i <= target_boundary; ++i) {
 			current_costs = field[field_index_source][field_index_target - i].getPathCosts();
 			if (!((current_costs += deltaCosts[(field_index_source + first_node_source) % dim1][(field_index_target + first_node_target)
-					% dim2][0][i]) < min_costs))
+					% dim2][0][i]) < min_costs)) {
 				continue;
+			}
 			min_costs = current_costs;
 			predecessor = field[field_index_source][field_index_target - i];
 		}
@@ -989,8 +947,9 @@ public class MorphCalculator {
 			for (int j = 1; j <= target_boundary; ++j) {
 				current_costs = field[field_index_source - i][field_index_target - j].getPathCosts();
 				if (!((current_costs += deltaCosts[(field_index_source + first_node_source) % dim1][(field_index_target + first_node_target)
-						% dim2][i][j]) < min_costs))
+						% dim2][i][j]) < min_costs)) {
 					continue;
+				}
 				min_costs = current_costs;
 				predecessor = field[field_index_source - i][field_index_target - j];
 			}
@@ -1020,7 +979,8 @@ public class MorphCalculator {
 		return field;
 	}
 
-	public static Node[][] initializeField(Node[][] field, int source_index, int target_index, Vector<Point> sourceFPs, Vector<Point> targetFPs) {
+	public static Node[][] initializeField(Node[][] field, int source_index, int target_index, Vector<Point> sourceFPs,
+			Vector<Point> targetFPs) {
 		int target_curr_index;
 		int source_curr_index;
 		int i;
@@ -1071,29 +1031,33 @@ public class MorphCalculator {
 		int fp_count = source.getFeaturePointCount();
 		for (i2 = 0; i2 < fp_count; ++i2) {
 			curr = source.getFeaturePoint(i2);
-			if (curr.hasCorrespondence())
+			if (curr.hasCorrespondence()) {
 				continue;
+			}
 			MorphCalculator.createCorrespondence(source, target, s1, t1, curr);
 		}
 		fp_count = target.getFeaturePointCount();
 		for (i2 = 0; i2 < fp_count; ++i2) {
 			curr = target.getFeaturePoint(i2);
-			if (curr.hasCorrespondence())
+			if (curr.hasCorrespondence()) {
 				continue;
+			}
 			MorphCalculator.createCorrespondence(target, source, t1, s1, curr);
 		}
 		fp_count = source.getCount();
 		for (i = 0; i < fp_count; ++i) {
 			Point curr_point = source.getVertex(i);
-			if (curr_point.hasCorrespondence())
+			if (curr_point.hasCorrespondence()) {
 				continue;
+			}
 			MorphCalculator.createCorrespondence(source, target, s1, t1, curr_point);
 		}
 		fp_count = target.getCount();
 		for (i = 0; i < fp_count; ++i) {
 			Point curr_point = target.getVertex(i);
-			if (curr_point.hasCorrespondence())
+			if (curr_point.hasCorrespondence()) {
 				continue;
+			}
 			MorphCalculator.createCorrespondence(target, source, t1, s1, curr_point);
 		}
 		if (source.isClosed()) {
@@ -1116,8 +1080,9 @@ public class MorphCalculator {
 			int t_pred_index;
 			Node node = oPath.getNodeAt(i);
 			FeaturePoint curr = s_points ? node.getSourcePoint() : node.getTargetPoint();
-			if (curr.hasCorrespondence())
+			if (curr.hasCorrespondence()) {
 				continue;
+			}
 			FeaturePoint pred = MorphCalculator.getPredecessor(source, curr);
 			FeaturePoint succ = MorphCalculator.getSuccessor(source, curr);
 			Point t_pred = pred.getCorrespondence();
@@ -1197,18 +1162,18 @@ public class MorphCalculator {
 					}
 					bestmatch = counter == diff ? target.getVertex((t_pred_index + diff - 1) % point_count)
 							: (counter == 1 ? target.getVertex((t_pred_index + 1) % point_count)
-									: ((Math.abs(t_length - t_pred_to_corr)) < (Math
-											.abs(t_length - t_pred_to_corr - segments[counter]))
-													? target.getVertex((t_pred_index + counter + 1) % point_count)
-													: target.getVertex((t_pred_index + --counter) % point_count)));
+									: ((Math.abs(t_length - t_pred_to_corr)) < (Math.abs(t_length - t_pred_to_corr - segments[counter]))
+											? target.getVertex((t_pred_index + counter + 1) % point_count)
+											: target.getVertex((t_pred_index + --counter) % point_count)));
 				} else {
 					bestmatch = target.getFeaturePoint((t_pred_index + 1) % point_count);
 					double min_costs = FeaturePoint.calculate_Sim_Cost(curr, (FeaturePoint) bestmatch);
 					for (int j = 2; j < diff; ++j) {
 						FeaturePoint tmp = target.getFeaturePoint((t_pred_index + j) % point_count);
 						double costs = FeaturePoint.calculate_Sim_Cost(curr, tmp);
-						if (!(costs < min_costs))
+						if (!(costs < min_costs)) {
 							continue;
+						}
 						bestmatch = tmp;
 						min_costs = costs;
 					}
@@ -1299,8 +1264,8 @@ public class MorphCalculator {
 		if (diff == 1) {
 			int x_slope = t_succ.getX() - t_pred.getX();
 			int y_slope = t_succ.getY() - t_pred.getY();
-			int t_x = (int) ((double) x_slope * pred_curr_to_total + 0.5);
-			int t_y = (int) ((double) y_slope * pred_curr_to_total + 0.5);
+			int t_x = (int) (x_slope * pred_curr_to_total + 0.5);
+			int t_y = (int) (y_slope * pred_curr_to_total + 0.5);
 			Point corr = new Point(t_x += t_pred.getX(), t_y += t_pred.getY());
 			curr.setCorrespondence(corr);
 			s1.addVertexBefore(curr, pred);
@@ -1341,8 +1306,8 @@ public class MorphCalculator {
 			segment_end = target.getVertex((t_pred_index + counter + 1) % t_count);
 			int x_slope = segment_end.getX() - segment_start.getX();
 			int y_slope = segment_end.getY() - segment_start.getY();
-			int t_x = (int) ((double) x_slope * (t_part /= segments[counter]) + 0.5);
-			int t_y = (int) ((double) y_slope * t_part + 0.5);
+			int t_x = (int) (x_slope * (t_part /= segments[counter]) + 0.5);
+			int t_y = (int) (y_slope * t_part + 0.5);
 			Point corr = new Point(t_x += segment_start.getX(), t_y += segment_start.getY());
 			curr.setCorrespondence(corr);
 			s1.addVertexBefore(curr, pred);
@@ -1355,20 +1320,20 @@ public class MorphCalculator {
 		Vector<Point> vertices = polygon.getAllVertices();
 		int v_count = polygon.getCount();
 		int index = polygon.getIndex(curr);
-		while (!((Point) vertices.elementAt(index)).hasCorrespondence()) {
+		while (!vertices.elementAt(index).hasCorrespondence()) {
 			index = (index - 1 + v_count) % v_count;
 		}
-		return (Point) vertices.elementAt(index);
+		return vertices.elementAt(index);
 	}
 
 	private static Point getSuccessor2(Polygon polygon, Point curr) {
 		Vector<Point> vertices = polygon.getAllVertices();
 		int v_count = polygon.getCount();
 		int index = polygon.getIndex(curr);
-		while (!((Point) vertices.elementAt(index)).hasCorrespondence()) {
+		while (!vertices.elementAt(index).hasCorrespondence()) {
 			index = (index + 1) % v_count;
 		}
-		return (Point) vertices.elementAt(index);
+		return vertices.elementAt(index);
 	}
 
 	private static void createCorrespondence(Polygon source, Polygon target, Polygon s1, Polygon t1, Point curr) {

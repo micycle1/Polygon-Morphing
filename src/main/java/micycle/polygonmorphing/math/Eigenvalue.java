@@ -1,7 +1,7 @@
 package micycle.polygonmorphing.math;
 
 public class Eigenvalue {
-	
+
 	public static double[] eigenvalue(double a, double b, double c) {
 		double[] wr = new double[2];
 		double s = 0.0;
@@ -80,8 +80,9 @@ public class Eigenvalue {
 			}
 			y = a[na][na];
 			w = a[en][na] * a[na][en];
-			if (l != na)
+			if (l != na) {
 				continue;
+			}
 			p = (-x + y) / 2.0;
 			q = p * p + w;
 			zz = Math.sqrt(Math.abs(q));
@@ -132,8 +133,9 @@ public class Eigenvalue {
 			p = wr[en];
 			q = wi[en];
 			na = en - 1;
-			if (q > 0.0)
+			if (q > 0.0) {
 				continue;
+			}
 			if (q == 0.0) {
 				m = en;
 				a[en][en] = 1.0;
@@ -167,8 +169,9 @@ public class Eigenvalue {
 						a[j + 1][en] = Math.abs(x) > Math.abs(zz) ? -(r + w * t) / x : -(s + y * t) / zz;
 					}
 					t = Math.abs(a[j][en]);
-					if (t == 0.0 || ((tst1 = t) + 1.0 / tst1) > tst1)
+					if (t == 0.0 || ((tst1 = t) + 1.0 / tst1) > tst1) {
 						continue;
+					}
 					for (ii = j; ii <= en; ++ii) {
 						double[] arrd = a[ii];
 						int n = en;

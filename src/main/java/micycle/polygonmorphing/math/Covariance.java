@@ -12,10 +12,10 @@ public class Covariance {
 		double y_sum = 0.0;
 		double x_sum = 0.0;
 		int i = 0;
-		while ((double) i < count) {
-			Point p = (Point) v.elementAt(i);
-			x_sum += (double) p.getX();
-			y_sum += (double) p.getY();
+		while (i < count) {
+			Point p = v.elementAt(i);
+			x_sum += p.getX();
+			y_sum += p.getY();
 			++i;
 		}
 		center[0] = x_sum / count;
@@ -33,10 +33,10 @@ public class Covariance {
 		double a01 = 0.0;
 		double a11 = 0.0;
 		int i = 0;
-		while ((double) i < count) {
-			Point p = (Point) v.elementAt(i);
-			double x = (double) p.getX() - x_c;
-			double y = (double) p.getY() - y_c;
+		while (i < count) {
+			Point p = v.elementAt(i);
+			double x = p.getX() - x_c;
+			double y = p.getY() - y_c;
 			a00 += x * x;
 			a01 += x * y;
 			a11 += y * y;
@@ -57,9 +57,9 @@ public class Covariance {
 	public static double[] getBisector(Vector<Point> v) {
 		double[] bisector = new double[2];
 		int mid = v.size() / 2;
-		Point left = (Point) v.elementAt(mid - 1);
-		Point right = (Point) v.elementAt(mid + 1);
-		Point center = (Point) v.elementAt(mid);
+		Point left = v.elementAt(mid - 1);
+		Point right = v.elementAt(mid + 1);
+		Point center = v.elementAt(mid);
 		double center_x = center.getX();
 		double center_y = center.getY();
 		double left_x = left.getX();

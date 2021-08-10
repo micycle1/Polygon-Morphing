@@ -34,16 +34,16 @@ public class Polygon extends GraphicObject implements Cloneable {
 	public Polygon() {
 		super(1);
 		this.total_count = 0;
-		this.featurePoints = new Vector<Point>();
-		this.all_vertices = new Vector<Point>();
+		this.featurePoints = new Vector<>();
+		this.all_vertices = new Vector<>();
 	}
 
 	public Polygon(Point start, int factor) {
 		super(factor);
 		this.total_count = 0;
 		this.fp_count = 0;
-		this.featurePoints = new Vector<Point>();
-		this.all_vertices = new Vector<Point>();
+		this.featurePoints = new Vector<>();
+		this.all_vertices = new Vector<>();
 		addVertex(start);
 	}
 
@@ -59,34 +59,40 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public Polygon(Polygon original) {
-		this.featurePoints = new Vector<Point>();
-		this.all_vertices = new Vector<Point>();
+		this.featurePoints = new Vector<>();
+		this.all_vertices = new Vector<>();
 		this.total_count = 0;
 		this.fp_count = 0;
 		Enumeration<Point> e = original.all_vertices.elements();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			addVertex(e.nextElement());
-		if (original.isClosed())
+		}
+		if (original.isClosed()) {
 			close();
+		}
 	}
 
 	public Polygon(Polygon p, int i) {
 		int vertex_count = p.getCount();
-		if (i < 0 || i >= vertex_count)
+		if (i < 0 || i >= vertex_count) {
 			throw new IllegalArgumentException(
 					"index i= " + i + " of removed vertex is out of bounds! \nFor this polygon it must be between (including) 0 and"
 							+ (p.getCount() - 1) + "!");
+		}
 		this.total_count = 0;
 		this.fp_count = 0;
-		this.featurePoints = new Vector<Point>();
-		this.all_vertices = new Vector<Point>();
+		this.featurePoints = new Vector<>();
+		this.all_vertices = new Vector<>();
 		int j;
-		for (j = 0; j < i; j++)
+		for (j = 0; j < i; j++) {
 			addVertex(p.getVertex(j));
-		for (j = i + 1; j < vertex_count; j++)
+		}
+		for (j = i + 1; j < vertex_count; j++) {
 			addVertex(p.getVertex(j));
-		if (p.isClosed())
+		}
+		if (p.isClosed()) {
 			close();
+		}
 	}
 
 	public void addVertex(Point p) {
@@ -106,16 +112,17 @@ public class Polygon extends GraphicObject implements Cloneable {
 
 	public void addVertices(String point_string) {
 		String[] new_lines = point_string.split("\n");
-		for (int i = 0; i < new_lines.length; i++) {
-			String[] point_rep = new_lines[i].split(",");
+		for (String new_line : new_lines) {
+			String[] point_rep = new_line.split(",");
 			Point p = new Point(Integer.valueOf(point_rep[0]), Integer.valueOf(point_rep[1]));
 			addVertex(p);
 		}
 	}
 
 	public Point getVertex(int index) {
-		if (index < 0 || index >= this.total_count)
+		if (index < 0 || index >= this.total_count) {
 			throw new IllegalArgumentException("Given index (" + index + ") is out of legal values.");
+		}
 		return this.all_vertices.elementAt(index);
 	}
 
@@ -131,8 +138,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 
 	public void addVertexBehind(Point p, Point q) {
 		int index = getIndex(q);
-		if (index < 0)
+		if (index < 0) {
 			throw new IllegalArgumentException("Point " + q.toString() + " is no vortex in this polygon.");
+		}
 		if (p instanceof FeaturePoint) {
 			this.fp_count++;
 			int f_index = -1;
@@ -156,8 +164,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 
 	public void addVertexBefore(Point p, Point q) {
 		int index = getIndex(q);
-		if (index < 0)
+		if (index < 0) {
 			throw new IllegalArgumentException("Point " + q.toString() + " is no vortex in this polygon.");
+		}
 		if (p instanceof FeaturePoint) {
 			this.fp_count++;
 			int f_index = -1;
@@ -184,20 +193,24 @@ public class Polygon extends GraphicObject implements Cloneable {
 		int index_r = -1;
 		int i = 0;
 		while (index_q == -1 && i < this.total_count) {
-			if (q.equals(this.all_vertices.elementAt(i)))
+			if (q.equals(this.all_vertices.elementAt(i))) {
 				index_q = i;
+			}
 			i++;
 		}
-		if (index_q < 0)
+		if (index_q < 0) {
 			throw new IllegalArgumentException("Point " + q.toString() + " is no vortex in this polygon.");
+		}
 		i = 0;
 		while (index_r == -1 && i < this.total_count) {
-			if (r.equals(this.all_vertices.elementAt(i)))
+			if (r.equals(this.all_vertices.elementAt(i))) {
 				index_r = i;
+			}
 			i++;
 		}
-		if (index_r < 0)
+		if (index_r < 0) {
 			throw new IllegalArgumentException("Point " + r.toString() + " is no vortex in this polygon.");
+		}
 		if (index_q < index_r) {
 			if (index_r - index_q == 1) {
 				if (p instanceof FeaturePoint) {
@@ -230,15 +243,17 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public Vector<Point> getSample(int sample_rate) {
-		if (sample_rate == this.sample_rate && this.lastsample != null && !this.changed)
+		if (sample_rate == this.sample_rate && this.lastsample != null && !this.changed) {
 			return this.lastsample;
-		if (this.total_count == 0)
+		}
+		if (this.total_count == 0) {
 			return null;
+		}
 		if (this.total_count == 1) {
 			this.lastsample = this.all_vertices;
 			this.changed = false;
 		} else {
-			this.lastsample = new Vector<Point>();
+			this.lastsample = new Vector<>();
 			Enumeration<Point> e = this.all_vertices.elements();
 			Point start = e.nextElement();
 			while (e.hasMoreElements()) {
@@ -259,8 +274,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public int[] getSampleArray(int sample_rate) {
-		if (this.sample_rate != sample_rate || this.lastsample == null || this.changed)
+		if (this.sample_rate != sample_rate || this.lastsample == null || this.changed) {
 			getSample(sample_rate);
+		}
 		int length = this.lastsample.size();
 		int[] return_array = new int[2 * length];
 		for (int i = 0; i < length; i++) {
@@ -296,8 +312,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public FeaturePoint getFeaturePoint(int index) {
-		if (index < 0 || index >= this.fp_count)
+		if (index < 0 || index >= this.fp_count) {
 			throw new IllegalArgumentException("desired vertex index " + index + " is out bounds!");
+		}
 		return (FeaturePoint) this.featurePoints.elementAt(index);
 	}
 
@@ -306,15 +323,17 @@ public class Polygon extends GraphicObject implements Cloneable {
 		this.fp_count = this.featurePoints.size();
 		int counter = 0;
 		while (index == -1 && counter < this.fp_count) {
-			if (fp == (FeaturePoint) this.featurePoints.elementAt(counter))
+			if (fp == (FeaturePoint) this.featurePoints.elementAt(counter)) {
 				index = counter;
+			}
 			counter++;
 		}
 		if (index == -1) {
 			counter = 0;
 			while (index == -1 && counter < this.fp_count) {
-				if (fp.equals(this.featurePoints.elementAt(counter)))
+				if (fp.equals(this.featurePoints.elementAt(counter))) {
 					index = counter;
+				}
 				counter++;
 			}
 		}
@@ -325,15 +344,17 @@ public class Polygon extends GraphicObject implements Cloneable {
 		int index = -1;
 		int counter = 0;
 		while (index == -1 && counter < this.total_count) {
-			if (p == this.all_vertices.elementAt(counter))
+			if (p == this.all_vertices.elementAt(counter)) {
 				index = counter;
+			}
 			counter++;
 		}
 		if (index == -1) {
 			counter = 0;
 			while (index == -1 && counter < this.total_count) {
-				if (p.equals(this.all_vertices.elementAt(counter)))
+				if (p.equals(this.all_vertices.elementAt(counter))) {
 					index = counter;
+				}
 				counter++;
 			}
 		}
@@ -349,8 +370,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public void setRegion(int region) {
-		if (region < 0)
+		if (region < 0) {
 			throw new IllegalArgumentException("Size of the region must be >=0 !");
+		}
 		this.region = region;
 	}
 
@@ -358,6 +380,7 @@ public class Polygon extends GraphicObject implements Cloneable {
 		return this.region;
 	}
 
+	@Override
 	public boolean contains(Point p) {
 		int x = p.getX();
 		int y = p.getY();
@@ -369,13 +392,15 @@ public class Polygon extends GraphicObject implements Cloneable {
 		boolean start_above = (y1 >= y);
 		for (int i = 1; i < this.total_count; i++) {
 			boolean bool = (y2 >= y);
-			if (start_above != bool)
+			if (start_above != bool) {
 				if ((y2 - y) * (x2 - x1) <= (y2 - y1) * (x2 - x)) {
-					if (bool)
+					if (bool) {
 						contains = !contains;
+					}
 				} else if (!bool) {
 					contains = !contains;
 				}
+			}
 			start_above = bool;
 			y1 = y2;
 			x1 = x2;
@@ -383,20 +408,23 @@ public class Polygon extends GraphicObject implements Cloneable {
 			x2 = this.all_vertices.elementAt(i).getX();
 		}
 		boolean end_above = (y2 >= y);
-		if (start_above != end_above)
+		if (start_above != end_above) {
 			if ((y2 - y) * (x2 - x1) <= (y2 - y1) * (x2 - x)) {
-				if (end_above)
+				if (end_above) {
 					contains = !contains;
+				}
 			} else if (!end_above) {
 				contains = !contains;
 			}
+		}
 		return contains;
 	}
 
 	public boolean isConvex(Point p) {
 		int index;
-		if ((index = this.featurePoints.indexOf(p)) == -1)
+		if ((index = this.featurePoints.indexOf(p)) == -1) {
 			throw new IllegalArgumentException("Point not contained in polygon!");
+		}
 		if (this.closed || (index - 2 >= 0 && index + 2 < this.total_count)) {
 			int ux = p.getX();
 			int uy = p.getY();
@@ -415,20 +443,23 @@ public class Polygon extends GraphicObject implements Cloneable {
 			vy = tmp2.getY() - py;
 			int result2 = ux * vy - uy * vx + py * vx - px * vy;
 			if (result1 >= 0) {
-				if (result2 >= 0)
+				if (result2 >= 0) {
 					return true;
+				}
 				return false;
 			}
-			if (result2 <= 0)
+			if (result2 <= 0) {
 				return true;
+			}
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isClosingPoint(Point p) {
-		if (this.total_count < 3)
+		if (this.total_count < 3) {
 			return false;
+		}
 		Point start = getVertex(0);
 		int xs = start.getX();
 		int ys = start.getY();
@@ -442,7 +473,7 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public void setAllVerticesToFeaturePoints() {
-		Vector<Point> tmp = new Vector<Point>();
+		Vector<Point> tmp = new Vector<>();
 		Enumeration<Point> e = this.all_vertices.elements();
 		while (e.hasMoreElements()) {
 			FeaturePoint fp = new FeaturePoint(e.nextElement());
@@ -475,7 +506,7 @@ public class Polygon extends GraphicObject implements Cloneable {
 			Point pred = this.featurePoints.elementAt((i - 1 + size) % size);
 			Point succ = this.featurePoints.elementAt((i + 1) % size);
 			int index = getIndex(feature);
-			Vector<Point> ros = new Vector<Point>();
+			Vector<Point> ros = new Vector<>();
 			if (!simple_ROS) {
 				int pred_index = getIndex(pred);
 				int start_index = pred_index;
@@ -561,8 +592,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 				}
 				ros.add(succ);
 			} else {
-				for (int k = 0; k < 2 * range + 1; k++)
+				for (int k = 0; k < 2 * range + 1; k++) {
 					ros.add(samplePoints.elementAt((index - range + sample_size + k) % sample_size));
+				}
 			}
 			double[][] covariance = Covariance.covariance(ros);
 			double[] eigenvalues = Eigenvalue.hqr2(covariance, eigenvectors);
@@ -589,8 +621,8 @@ public class Polygon extends GraphicObject implements Cloneable {
 				epsilon = -1.0D;
 			}
 			feature.setFeat_var(epsilon * normal_eva / (normal_eva + tangent_eva));
-			Vector<Point> rol = new Vector<Point>();
-			Vector<Point> ror = new Vector<Point>();
+			Vector<Point> rol = new Vector<>();
+			Vector<Point> ror = new Vector<>();
 			ror.add(feature);
 			for (int j = 0; j < range; j++) {
 				rol.add(ros.elementAt(j));
@@ -662,17 +694,21 @@ public class Polygon extends GraphicObject implements Cloneable {
 	}
 
 	public void deleteCorrespondences() {
-		for (int i = 0; i < this.total_count; i++)
+		for (int i = 0; i < this.total_count; i++) {
 			this.all_vertices.elementAt(i).clearCorrespondence();
+		}
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer buff = new StringBuffer();
 		Enumeration<Point> e = this.all_vertices.elements();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			buff.append(e.nextElement().toString());
-		if (this.closed)
+		}
+		if (this.closed) {
 			buff.append("\n The polygon is closed.");
+		}
 		return buff.toString();
 	}
 
@@ -680,6 +716,7 @@ public class Polygon extends GraphicObject implements Cloneable {
 		this.fp_count = this.featurePoints.size();
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		Point p = this.all_vertices.firstElement();
 		if (!this.dashed) {
@@ -705,6 +742,7 @@ public class Polygon extends GraphicObject implements Cloneable {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object clone() throws CloneNotSupportedException {
 		Polygon clone = (Polygon) super.clone();
@@ -723,6 +761,7 @@ public class Polygon extends GraphicObject implements Cloneable {
 		return clone;
 	}
 
+	@Override
 	public String toSVG() {
 		StringBuffer buff = new StringBuffer();
 		buff.append("\t\t<path");
@@ -738,8 +777,9 @@ public class Polygon extends GraphicObject implements Cloneable {
 		Point p = this.all_vertices.firstElement();
 		buff.append("\t\t\t d=\"M " + p.getX() + " " + p.getY() + " ");
 		for (int i = 1; i < this.all_vertices.size(); i++) {
-			if (i % 3 == 0)
+			if (i % 3 == 0) {
 				buff.append("\n\t\t\t");
+			}
 			p = this.all_vertices.elementAt(i);
 			buff.append("L " + p.getX() + " " + p.getY() + " ");
 		}

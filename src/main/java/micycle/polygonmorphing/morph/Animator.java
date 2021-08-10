@@ -5,7 +5,7 @@ import micycle.polygonmorphing.shapes.Point;
 import micycle.polygonmorphing.shapes.Polygon;
 
 public class Animator {
-	
+
 	public static Polygon[] animate(Polygon source, Polygon target, int steps) {
 		int i;
 		int source_points = source.getCount();
@@ -20,10 +20,10 @@ public class Animator {
 			Point end = target.getVertex(i);
 			double x = start.getX();
 			double y = start.getY();
-			double x_diff = (double) end.getX() - x;
-			double y_diff = (double) end.getY() - y;
-			x_diff /= (double) (steps - 1);
-			y_diff /= (double) (steps - 1);
+			double x_diff = end.getX() - x;
+			double y_diff = end.getY() - y;
+			x_diff /= steps - 1;
+			y_diff /= steps - 1;
 			if (start instanceof FeaturePoint) {
 				for (j = 1; j < steps - 1; ++j) {
 					morph_in_betweens[j].addVertex(new FeaturePoint((int) ((x += x_diff) + 0.5), (int) ((y += y_diff) + 0.5)));
@@ -44,9 +44,9 @@ public class Animator {
 	public static Polygon[] animate(Polygon source, Polygon target, int fps, double time) {
 		double calctime = time * 100.0;
 		int int_time = (int) (calctime + 0.5);
-		calctime = (double) int_time / 100.0;
+		calctime = int_time / 100.0;
 //		double decimal_places = calctime - (double) (int_time / 100);
-		double total_steps = calctime * (double) fps;
+		double total_steps = calctime * fps;
 		return Animator.animate(source, target, (int) (total_steps + 0.5));
 	}
 }

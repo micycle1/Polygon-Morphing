@@ -66,7 +66,7 @@ public class Bresenham {
 
 	public static Vector<Point> sample(Point p, Point q, int sample_rate, int offset) {
 		int inc_x, inc_y;
-		Vector<Point> return_sample = new Vector<Point>();
+		Vector<Point> return_sample = new Vector<>();
 		int x = p.getX();
 		int y = p.getY();
 		int x_end = q.getX();
@@ -126,7 +126,7 @@ public class Bresenham {
 
 	public static Vector<Point> semiUniformSample(Point p, Point q, int sample_rate) {
 		int inc_x, inc_y;
-		Vector<Point> return_sample = new Vector<Point>();
+		Vector<Point> return_sample = new Vector<>();
 		int x = p.getX();
 		int y = p.getY();
 		int x_end = q.getX();
@@ -183,8 +183,9 @@ public class Bresenham {
 				}
 			}
 		}
-		if (!((Point) return_sample.lastElement()).equals(q))
+		if (!return_sample.lastElement().equals(q)) {
 			return_sample.add(q);
+		}
 		return return_sample;
 	}
 
@@ -211,8 +212,9 @@ public class Bresenham {
 			int delta = 2 * Math.abs(dy);
 			int step = 2 * error;
 			while (x != x_end) {
-				if (steps++ / 3 % 2 == 0)
+				if (steps++ / 3 % 2 == 0) {
 					setPixel(x, y, factor, g);
+				}
 				x += inc_x;
 				error += delta;
 				if (error > 0) {
@@ -225,8 +227,9 @@ public class Bresenham {
 			int delta = 2 * Math.abs(dx);
 			int step = 2 * error;
 			while (y != y_end) {
-				if (steps++ / 3 % 2 == 0)
+				if (steps++ / 3 % 2 == 0) {
 					setPixel(x, y, factor, g);
+				}
 				y += inc_y;
 				error += delta;
 				if (error > 0) {
@@ -235,15 +238,17 @@ public class Bresenham {
 				}
 			}
 		}
-		if (steps++ / 3 % 2 == 0)
+		if (steps++ / 3 % 2 == 0) {
 			setPixel(x_end, y_end, factor, g);
+		}
 	}
 
 	public static double getLength(Vector<Point> vector) {
 		double length = 0.0D;
 		int size = vector.size();
-		if (size == 0 || size == 1)
+		if (size == 0 || size == 1) {
 			return length;
+		}
 		Enumeration<Point> e = vector.elements();
 		Point a = e.nextElement();
 		while (e.hasMoreElements()) {

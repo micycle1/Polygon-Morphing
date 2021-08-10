@@ -122,13 +122,15 @@ public class Path {
 			for (j = 0; j < bla.length; ++j) {
 				bla[j] = (Node) bucket[i].elementAt(j);
 			}
-			if (bla.length <= 1)
+			if (bla.length <= 1) {
 				continue;
+			}
 			min = bla[0].getSimCosts();
 			pos = 0;
 			for (j = 1; j < bla.length; ++j) {
-				if (!(bla[j].getSimCosts() < min))
+				if (!(bla[j].getSimCosts() < min)) {
 					continue;
+				}
 				pos = j;
 				min = bla[j].getSimCosts();
 			}
@@ -153,13 +155,15 @@ public class Path {
 			for (j = 0; j < bla.length; ++j) {
 				bla[j] = (Node) bucket[i].elementAt(j);
 			}
-			if (bla.length <= 1)
+			if (bla.length <= 1) {
 				continue;
+			}
 			min = bla[0].getSimCosts();
 			pos = 0;
 			for (j = 1; j < bla.length; ++j) {
-				if (!(bla[j].getSimCosts() < min))
+				if (!(bla[j].getSimCosts() < min)) {
 					continue;
+				}
 				pos = j;
 				min = bla[j].getSimCosts();
 			}
@@ -185,6 +189,7 @@ public class Path {
 		return this.size;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer buff = new StringBuffer();
 		buff.append("Path, Number of Nodes: " + this.size + "; Total path costs: " + this.costs + "\n");

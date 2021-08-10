@@ -123,10 +123,12 @@ public class Node {
 		return this.path_costs;
 	}
 
+	@Override
 	public Object clone() {
 		return new Node(this.x, this.y, this.similarity_costs);
 	}
 
+	@Override
 	public String toString() {
 		return "Node(" + this.x + "," + this.y + "); SimCosts:" + this.similarity_costs + "; PathCosts:" + this.path_costs + "\n";
 	}

@@ -3,7 +3,7 @@ package micycle.polygonmorphing.shapes;
 import java.awt.Graphics;
 
 public class Point extends GraphicObject implements Cloneable {
-	
+
 	private int x;
 	private int y;
 	private Point correspondence = null;
@@ -30,10 +30,12 @@ public class Point extends GraphicObject implements Cloneable {
 		this.setY(y);
 	}
 
+	@Override
 	public int getX() {
 		return this.x;
 	}
 
+	@Override
 	public int getY() {
 		return this.y;
 	}
@@ -97,18 +99,22 @@ public class Point extends GraphicObject implements Cloneable {
 		return this.x == p.getX() && this.y == p.getY();
 	}
 
+	@Override
 	public String toString() {
 		return "Point: x=" + this.x + " y=" + this.y + "\n";
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		g.fillOval(this.x * this.factor, this.y * this.factor, this.factor, this.factor);
 	}
 
+	@Override
 	public boolean contains(Point p) {
 		return Math.abs(p.getX() - this.x) + Math.abs(p.getY() - this.y) < 5;
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Point p = (Point) super.clone();
 		p.x = this.x;
@@ -116,6 +122,7 @@ public class Point extends GraphicObject implements Cloneable {
 		return p;
 	}
 
+	@Override
 	public String toSVG() {
 		return "\t\t\t<circle cx=\"" + this.getX() + "\" cy=\"" + this.getY() + "\" r=\"1\" fill=\"black\" />\n";
 	}
