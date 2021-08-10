@@ -238,12 +238,12 @@ public class Bresenham {
       setPixel(x_end, y_end, factor, g); 
   }
   
-  public static double getLength(Vector vector) {
+  public static double getLength(Vector<Point> vector) {
     double length = 0.0D;
     int size = vector.size();
     if (size == 0 || size == 1)
       return length; 
-    Enumeration e = vector.elements();
+    Enumeration<Point> e = vector.elements();
     Point a = e.nextElement();
     while (e.hasMoreElements()) {
       Point b = e.nextElement();

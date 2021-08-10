@@ -14,13 +14,13 @@ public class Polygon extends GraphicObject implements Cloneable {
   
   private int total_count;
   
-  private Vector featurePoints;
+  private Vector<Point> featurePoints;
   
-  private Vector all_vertices;
+  private Vector<Point> all_vertices;
   
   private int sample_rate = 0;
   
-  private Vector lastsample = null;
+  private Vector<Point> lastsample = null;
   
   private boolean closed = false;
   
@@ -62,7 +62,7 @@ public class Polygon extends GraphicObject implements Cloneable {
     this.all_vertices = new Vector();
     this.total_count = 0;
     this.fp_count = 0;
-    Enumeration e = original.all_vertices.elements();
+    Enumeration<Point> e = original.all_vertices.elements();
     while (e.hasMoreElements())
       addVertex(e.nextElement()); 
     if (original.isClosed())
@@ -118,7 +118,7 @@ public class Polygon extends GraphicObject implements Cloneable {
   
   public boolean isVertex(Point p) {
     boolean is_vertex = false;
-    Enumeration e = this.all_vertices.elements();
+    Enumeration<Point> e = this.all_vertices.elements();
     while (!is_vertex && e.hasMoreElements()) {
       Point q = e.nextElement();
       is_vertex = p.equals(q);
@@ -238,7 +238,7 @@ public class Polygon extends GraphicObject implements Cloneable {
       this.changed = false;
     } else {
       this.lastsample = new Vector();
-      Enumeration e = this.all_vertices.elements();
+      Enumeration<Point> e = this.all_vertices.elements();
       Point start = e.nextElement();
       while (e.hasMoreElements()) {
         Point end = e.nextElement();
@@ -297,7 +297,7 @@ public class Polygon extends GraphicObject implements Cloneable {
   public FeaturePoint getFeaturePoint(int index) {
     if (index < 0 || index >= this.fp_count)
       throw new IllegalArgumentException("desired vertex index " + index + " is out bounds!"); 
-    return this.featurePoints.elementAt(index);
+    return (FeaturePoint) this.featurePoints.elementAt(index);
   }
   
   public int getFeaturePointIndex(FeaturePoint fp) {
@@ -441,8 +441,8 @@ public class Polygon extends GraphicObject implements Cloneable {
   }
   
   public void setAllVerticesToFeaturePoints() {
-    Vector tmp = new Vector();
-    Enumeration e = this.all_vertices.elements();
+    Vector<Point> tmp = new Vector();
+    Enumeration<Point> e = this.all_vertices.elements();
     while (e.hasMoreElements()) {
       FeaturePoint fp = new FeaturePoint(e.nextElement());
       this.featurePoints.add(fp);
@@ -470,7 +470,7 @@ public class Polygon extends GraphicObject implements Cloneable {
     int size = this.featurePoints.size();
     for (int i = 0; i < this.fp_count; i++) {
       double tangent_eva, normal_eva, tmp_t_eva, tmp_n_eva;
-      FeaturePoint feature = this.featurePoints.elementAt(i);
+      FeaturePoint feature = (FeaturePoint) this.featurePoints.elementAt(i);
       Point pred = this.featurePoints.elementAt((i - 1 + size) % size);
       Point succ = this.featurePoints.elementAt((i + 1) % size);
       int index = getIndex(feature);
@@ -595,7 +595,7 @@ public class Polygon extends GraphicObject implements Cloneable {
       ror.add(feature);
       for (int j = 0; j < range; j++) {
         rol.add(ros.elementAt(j));
-        ror.add((FeaturePoint)ros.elementAt(j + range + 1));
+        ror.add((Point)ros.elementAt(j + range + 1));
       } 
       rol.add(feature);
       double[][] cov_rol = Covariance.covariance(rol);
