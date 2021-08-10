@@ -440,7 +440,7 @@ public class ExtendedController extends Controller {
 		buff.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
 		buff.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
 		buff.append("<svg width=\"" + (width + 110) + "\" height=\"" + height + "\" viewBox=\"0 0 " + (width + 100) + " " + height
-				+ "\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n");
+				+ "\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">\n");
 		buff.append("\t<desc>SVG-representation of the polygon Morphing</desc>\n");
 		buff.append(this.svgStart.toSVG());
 		buff.deleteCharAt(buff.length() - 3);
